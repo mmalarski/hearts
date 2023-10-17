@@ -11,8 +11,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
 	return (
 		<main className="h-screen w-screen bg-slate-950 text-slate-50">
-			<section className="mx-auto flex h-full w-full max-w-[800px] flex-col items-center justify-center gap-2">
-				<h1 className="text-4xl font-bold">Set hearts</h1>
+			<section className="mx-auto flex h-full w-[70%] max-w-[800px] flex-col items-center justify-center gap-8">
 				<Control />
 			</section>
 		</main>

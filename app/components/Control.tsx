@@ -9,7 +9,6 @@ export function Control() {
 		<>
 			<Painting hearts={hearts.at(0) ?? 0} />
 			<Slider max={10} step={0.5} value={hearts} onValueChange={setHearts} />
-			<div>{hearts.at(0)}</div>
 		</>
 	);
 }
