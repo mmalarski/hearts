@@ -147,7 +147,7 @@
 	},
 	"overrides": [
 		{
-			"files": ["app/routes/**/*.ts?(x)"],
+			"files": ["app/routes/**/*.ts?(x)", "app/root.tsx"],
 			"rules": {
 				"import/no-default-export": "off"
 			}
