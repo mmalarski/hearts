@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { type Style } from "~/lib/types/Style";
 import { Painting } from "./Painting";
 import {
 	Select,
@@ -11,7 +12,7 @@ import { Slider } from "./ui/slider";
 
 export function Control() {
 	const [hearts, setHearts] = useState([5.5]);
-	const [style, setStyle] = useState<"default" | "poison">("default");
+	const [style, setStyle] = useState<Style>("default");
 
 	return (
 		<>
@@ -20,7 +21,7 @@ export function Control() {
 			<Select
 				value={style}
 				onValueChange={(value) => {
-					setStyle(value as "default" | "poison");
+					setStyle(value as Style);
 				}}
 			>
 				<SelectTrigger className="w-[180px]">
@@ -29,6 +30,7 @@ export function Control() {
 				<SelectContent>
 					<SelectItem value="default">Default</SelectItem>
 					<SelectItem value="poison">Poisoned</SelectItem>
+					<SelectItem value="freezing">Freezing</SelectItem>
 				</SelectContent>
 			</Select>
 		</>

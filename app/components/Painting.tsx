@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { type Style } from "~/lib/types/Style";
 
-export function Painting({
-	hearts,
-	style,
-}: {
-	hearts: number;
-	style: "default" | "poison";
-}) {
+export function Painting({ hearts, style }: { hearts: number; style: Style }) {
 	const fullHeartRef = useRef<HTMLImageElement>(null);
 	const halfHeartRef = useRef<HTMLImageElement>(null);
 	const emptyHeartRef = useRef<HTMLImageElement>(null);
