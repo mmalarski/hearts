@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
-export function Painting({ hearts }: { hearts: number }) {
+export function Painting({
+	hearts,
+	style,
+}: {
+	hearts: number;
+	style: "default" | "poison";
+}) {
 	const fullHeartRef = useRef<HTMLImageElement>(null);
 	const halfHeartRef = useRef<HTMLImageElement>(null);
 	const emptyHeartRef = useRef<HTMLImageElement>(null);
@@ -46,14 +52,14 @@ export function Painting({ hearts }: { hearts: number }) {
 		}
 
 		setImageSource(canvasRef.current.toDataURL());
-	}, [hearts, setImageSource]);
+	}, [hearts, style, setImageSource]);
 
 	return (
 		<>
 			<div className="hidden">
-				<img src="/full-small.png" alt="full heart" ref={fullHeartRef} />
-				<img src="/half-small.png" alt="half heart" ref={halfHeartRef} />
-				<img src="/empty-small.png" alt="empty heart" ref={emptyHeartRef} />
+				<img src={`/full-${style}.png`} alt="full heart" ref={fullHeartRef} />
+				<img src={`/half-${style}.png`} alt="half heart" ref={halfHeartRef} />
+				<img src="/empty.png" alt="empty heart" ref={emptyHeartRef} />
 			</div>
 			<canvas
 				id="hearts-canvas"
