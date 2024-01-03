@@ -32,7 +32,7 @@ export default function App() {
 						__html: `import {ghostCursor} from "https://unpkg.com/cursor-effects@latest/dist/esm.js";
 					new ghostCursor();`,
 					}}
-				></script>
+				/>
 				<Outlet />
 				<ScrollRestoration />
 				<Scripts />
