@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { type Style } from "~/lib/types/Style";
+import { styles, type Style } from "~/lib/types/Style";
+import { capitalize } from "~/lib/utils";
 import { Painting } from "./Painting";
 import {
 	Select,
@@ -28,9 +29,11 @@ export function Control() {
 					<SelectValue placeholder="Style" />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value="default">Default</SelectItem>
-					<SelectItem value="poison">Poisoned</SelectItem>
-					<SelectItem value="freezing">Freezing</SelectItem>
+					{styles.map((style) => (
+						<SelectItem key={style} value={style}>
+							{capitalize(style)}
+						</SelectItem>
+					))}
 				</SelectContent>
 			</Select>
 		</>

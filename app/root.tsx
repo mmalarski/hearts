@@ -25,14 +25,6 @@ export default function App() {
 				<Links />
 			</head>
 			<body>
-				<script
-					type="module"
-					defer
-					dangerouslySetInnerHTML={{
-						__html: `import {ghostCursor} from "https://unpkg.com/cursor-effects@latest/dist/esm.js";
-					new ghostCursor();`,
-					}}
-				/>
 				<Outlet />
 				<ScrollRestoration />
 				<Scripts />

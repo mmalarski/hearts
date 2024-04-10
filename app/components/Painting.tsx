@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { type Style } from "~/lib/types/Style";
 
-export function Painting({ hearts, style }: { hearts: number; style: Style }) {
+export function Painting({
+	hearts,
+	style,
+}: Readonly<{ hearts: number; style: Style }>) {
 	const fullHeartRef = useRef<HTMLImageElement>(null);
 	const halfHeartRef = useRef<HTMLImageElement>(null);
 	const emptyHeartRef = useRef<HTMLImageElement>(null);
@@ -54,7 +57,11 @@ export function Painting({ hearts, style }: { hearts: number; style: Style }) {
 			<div className="hidden">
 				<img src={`/full-${style}.png`} alt="full heart" ref={fullHeartRef} />
 				<img src={`/half-${style}.png`} alt="half heart" ref={halfHeartRef} />
-				<img src="/empty.png" alt="empty heart" ref={emptyHeartRef} />
+				<img
+					src={`/empty${style === "food" ? "-food" : ""}.png`}
+					alt="empty heart"
+					ref={emptyHeartRef}
+				/>
 			</div>
 			<canvas
 				id="hearts-canvas"
