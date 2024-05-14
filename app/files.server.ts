@@ -1,12 +1,21 @@
 import { readFileSync } from "node:fs";
+import path from "node:path";
 import sharp from "sharp";
 
+/**
+ * Retrieves the public file path for a given original path.
+ * We need to do this for Vercel, otherwise it won't find the file.
+ *
+ * @param {string} originalPath - The original path of the file.
+ * @return {string} The resolved public file path.
+ */
+function getPublicFilePath(originalPath: string): string {
+	const replacedPath = originalPath.replace("./public/", "");
+	return path.resolve("./public", replacedPath);
+}
+
 export async function readFile(fileName: string) {
-	const isVercel = process.env.VERCEL === "1" || false;
-	const filePath = isVercel
-		? `${__dirname}/../../public/${fileName}.png`
-		: `./public/${fileName}.png`;
-	const file = readFileSync(filePath);
+	const file = readFileSync(getPublicFilePath(`${fileName}.png`));
 
 	return {
 		data: file,
