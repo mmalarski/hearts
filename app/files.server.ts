@@ -24,11 +24,13 @@ export async function readFile(fileName: string) {
 }
 
 export async function resizeFile(file: Buffer, width: number, height: number) {
-	const image = sharp(file);
+	const { data, info } = await sharp(file)
+		.resize(width, height)
+		.toBuffer({ resolveWithObject: true });
 
 	return {
-		data: await image.resize(width, height).toBuffer(),
-		metadata: await image.metadata(),
+		data: data,
+		metadata: info,
 	};
 }
 
