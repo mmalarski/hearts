@@ -7,15 +7,29 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	useLocation,
+	useNavigate,
 } from "@remix-run/react";
-import styles from "./globals.css";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "./components/ui/select";
+import globalStyles from "./globals.css";
+import { styles } from "./lib/types/Style";
+import { capitalize } from "./lib/utils";
 
 export const links: LinksFunction = () => [
-	{ rel: "stylesheet", href: styles },
+	{ rel: "stylesheet", href: globalStyles },
 	...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
 export default function App() {
+	const { pathname } = useLocation();
+	const navigate = useNavigate();
+
 	return (
 		<html lang="en">
 			<head>
@@ -25,7 +39,28 @@ export default function App() {
 				<Links />
 			</head>
 			<body>
-				<Outlet />
+				<main className="h-screen w-screen bg-slate-950 text-slate-50">
+					<section className="mx-auto flex h-full w-[70%] max-w-[800px] flex-col items-center justify-center gap-8">
+						<Outlet />
+						<Select
+							value={pathname.replace("/", "")}
+							onValueChange={(value) => {
+								navigate(`/${value}`);
+							}}
+						>
+							<SelectTrigger className="w-[180px]">
+								<SelectValue placeholder="Style" />
+							</SelectTrigger>
+							<SelectContent>
+								{styles.map((style) => (
+									<SelectItem key={style} value={style}>
+										{capitalize(style)}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</section>
+				</main>
 				<ScrollRestoration />
 				<Scripts />
 				<LiveReload />
