@@ -34,6 +34,46 @@ export async function resizeFile(file: Buffer, width: number, height: number) {
 	};
 }
 
+type CreateRemainingStatesParams = {
+	file: Buffer;
+	metadata: sharp.OutputInfo;
+};
+
+export async function createRemainingStates({
+	file,
+	metadata,
+}: CreateRemainingStatesParams) {
+	const rightSide = sharp(file)
+		.extract({
+			left: Math.ceil(metadata.width! / 2),
+			top: 0,
+			width: Math.floor(metadata.width! / 2),
+			height: metadata.height!,
+		})
+		.grayscale();
+
+	const combinedImage = sharp(file).composite([
+		{
+			input: await rightSide.toBuffer(),
+			left: Math.ceil(metadata.width! / 2),
+			top: 0,
+		},
+	]);
+
+	const emptyImage = sharp(file).grayscale();
+
+	return {
+		half: {
+			data: await combinedImage.toBuffer(),
+			metadata: await combinedImage.metadata(),
+		},
+		empty: {
+			data: await emptyImage.toBuffer(),
+			metadata: await emptyImage.metadata(),
+		},
+	};
+}
+
 type GetLoaderDataParams = {
 	fullImageFilename: string;
 	halfImageFilename: string;
