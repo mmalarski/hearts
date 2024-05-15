@@ -50,7 +50,8 @@ export async function createRemainingStates({
 			width: Math.floor(metadata.width! / 2),
 			height: metadata.height!,
 		})
-		.grayscale();
+		.grayscale()
+		.gamma(2, 1);
 
 	const combinedImage = sharp(file).composite([
 		{
@@ -60,7 +61,7 @@ export async function createRemainingStates({
 		},
 	]);
 
-	const emptyImage = sharp(file).grayscale();
+	const emptyImage = sharp(file).grayscale().gamma(2, 1);
 
 	return {
 		half: {
