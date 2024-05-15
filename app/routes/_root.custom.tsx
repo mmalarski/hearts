@@ -4,7 +4,11 @@ import {
 	unstable_defineAction,
 	unstable_parseMultipartFormData,
 } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+	defineClientAction,
+	defineClientLoader,
+} from "@remix-run/react/dist/single-fetch";
 import { Painting } from "~/components/Painting";
 import { createRemainingStates, resizeFile } from "~/files.server";
 
@@ -55,8 +59,21 @@ export const action = unstable_defineAction(async ({ request, response }) => {
 	};
 });
 
+export const clientAction = defineClientAction(async ({ serverAction }) => {
+	const data = await serverAction<typeof action>();
+	localStorage.setItem("hearts-custom-icon", JSON.stringify(data));
+	return data;
+});
+
+export const clientLoader = defineClientLoader(async () => {
+	const data = localStorage.getItem("hearts-custom-icon");
+	return data ? JSON.parse(data) : null;
+});
+
 export default function CustomPage() {
-	const data = useActionData<typeof action>();
+	const loaderData = useLoaderData<typeof clientLoader>();
+	const actionData = useActionData<typeof action>();
+	const data = actionData ?? loaderData;
 
 	return (
 		<div className="flex flex-col items-center gap-2">
