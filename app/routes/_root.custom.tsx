@@ -98,6 +98,16 @@ export default function CustomPage() {
 
 	return (
 		<div className="flex w-full max-w-[1100px] flex-col items-center gap-2">
+			{data ? (
+				<Form method="delete">
+					<Button
+						className="w-fit rounded border border-red-600 px-4 py-2 text-sm text-red-600 data-[active]:border-red-500 data-[hover]:border-red-500 data-[active]:text-red-500 data-[hover]:text-red-500"
+						type="submit"
+					>
+						Delete local image
+					</Button>
+				</Form>
+			) : null}
 			{shouldShowDropzone ? <Dropzone /> : <Spinner />}
 			{data ? (
 				<div className="flex flex-col items-center gap-4">
@@ -109,14 +119,6 @@ export default function CustomPage() {
 						}}
 						heartSize={data.full.size.height}
 					/>
-					<Form method="delete" className="mt-5 self-end">
-						<Button
-							className="w-fit rounded bg-red-900 px-4 py-2 text-sm text-white data-[active]:bg-red-800 data-[hover]:bg-red-800"
-							type="submit"
-						>
-							Delete local image
-						</Button>
-					</Form>
 				</div>
 			) : null}
 		</div>
