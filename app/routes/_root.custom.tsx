@@ -4,12 +4,21 @@ import {
 	unstable_defineAction,
 	unstable_parseMultipartFormData,
 } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+	Form,
+	Link,
+	useActionData,
+	useLoaderData,
+	useNavigation,
+} from "@remix-run/react";
 import {
 	defineClientAction,
 	defineClientLoader,
 } from "@remix-run/react/dist/single-fetch";
+import { useSpinDelay } from "spin-delay";
+import Dropzone from "~/components/Dropzone";
 import { Painting } from "~/components/Painting";
+import Spinner from "~/components/Spinner";
 import { createRemainingStates, resizeFile } from "~/files.server";
 
 export const action = unstable_defineAction(async ({ request, response }) => {
@@ -59,11 +68,17 @@ export const action = unstable_defineAction(async ({ request, response }) => {
 	};
 });
 
-export const clientAction = defineClientAction(async ({ serverAction }) => {
-	const data = await serverAction<typeof action>();
-	localStorage.setItem("hearts-custom-icon", JSON.stringify(data));
-	return data;
-});
+export const clientAction = defineClientAction(
+	async ({ serverAction, request }) => {
+		if (request.method === "DELETE") {
+			localStorage.removeItem("hearts-custom-icon");
+			return null;
+		}
+		const data = await serverAction<typeof action>();
+		localStorage.setItem("hearts-custom-icon", JSON.stringify(data));
+		return data;
+	},
+);
 
 export const clientLoader = defineClientLoader(async () => {
 	const data = localStorage.getItem("hearts-custom-icon");
@@ -74,30 +89,18 @@ export default function CustomPage() {
 	const loaderData = useLoaderData<typeof clientLoader>();
 	const actionData = useActionData<typeof action>();
 	const data = actionData ?? loaderData;
+	const navigation = useNavigation();
+
+	const shouldShowDropzone = useSpinDelay(navigation.state === "idle", {
+		delay: 150,
+		minDuration: 500,
+	});
 
 	return (
-		<div className="flex flex-col items-center gap-2">
-			<Form
-				method="post"
-				encType="multipart/form-data"
-				className="flex flex-col items-center gap-4"
-			>
-				<input
-					type="file"
-					id="custom-icon"
-					name="custom-icon"
-					accept="image/png, image/jpeg"
-					required
-				/>
-				<Button
-					className="data-[active]:bg-sky-slate-800 w-fit rounded bg-slate-900 px-4 py-2 text-sm text-white data-[hover]:bg-slate-800"
-					type="submit"
-				>
-					Submit
-				</Button>
-			</Form>
+		<div className="flex w-full max-w-[1100px] flex-col items-center gap-2">
+			{shouldShowDropzone ? <Dropzone /> : <Spinner />}
 			{data ? (
-				<div className="flex flex-col gap-4">
+				<div className="flex flex-col items-center gap-4">
 					<Painting
 						images={{
 							full: data.full.data,
@@ -106,8 +109,38 @@ export default function CustomPage() {
 						}}
 						heartSize={data.full.size.height}
 					/>
+					<Form method="delete" className="mt-5 self-end">
+						<Button
+							className="w-fit rounded bg-red-900 px-4 py-2 text-sm text-white data-[active]:bg-red-800 data-[hover]:bg-red-800"
+							type="submit"
+						>
+							Delete local image
+						</Button>
+					</Form>
 				</div>
 			) : null}
+		</div>
+	);
+}
+
+export function ErrorBoundary() {
+	return (
+		<div className="items-left flex w-full max-w-[1100px] flex-col gap-4 rounded-lg bg-red-950 p-6 text-gray-200">
+			<h1 className="text-2xl font-medium">Hey, an error 😅</h1>
+			<p>There was an error processing your image. Sorry about that!</p>
+			<p>
+				Can&apos;t really tell you what went wrong, but most likely the image
+				was too big and the request handler timed out. Or ran out of memory. Or
+				something else. Your guess is as good as mine.
+			</p>
+			<p>You can try again with a smaller image, or just give up. Your call.</p>
+			<Button
+				as={Link}
+				to="/"
+				className="w-fit self-center rounded bg-red-400 px-4 py-2 text-sm text-slate-900 data-[active]:bg-red-500 data-[hover]:bg-red-500"
+			>
+				🔙 Go back home
+			</Button>
 		</div>
 	);
 }
