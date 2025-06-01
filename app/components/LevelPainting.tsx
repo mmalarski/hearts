@@ -7,7 +7,7 @@ import { Label } from "./ui/label";
 export function LevelPainting() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [imageSource, setImageSource] = useState("");
-	const [hearts, setHearts] = useState([50]);
+	const [expAmount, setExpAmount] = useState([50]);
 	const [level, setLevel] = useState(50);
 	const navigation = useNavigation();
 
@@ -21,13 +21,7 @@ export function LevelPainting() {
 			return;
 		}
 
-		if (navigation.state !== "idle") {
-			return;
-		}
-
 		context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-
-		const experienceAmount = hearts[0];
 
 		const background = new Image();
 		background.onload = () => {
@@ -41,7 +35,7 @@ export function LevelPainting() {
 		const foreground = new Image();
 		foreground.onload = () => {
 			// Mask the foreground image along the x axis based on experienceAmount
-			const width = (canvasRef.current?.width ?? 0) * (experienceAmount / 100);
+			const width = (canvasRef.current?.width ?? 0) * (expAmount[0] / 100);
 			const canvasWidth = canvasRef.current?.width ?? 0;
 			const canvasHeight = canvasRef.current?.height ?? 0;
 			const imgHeight = foreground.height;
@@ -72,7 +66,7 @@ export function LevelPainting() {
 			setImageSource(canvasRef.current?.toDataURL() ?? "");
 		};
 		foreground.src = `experience_bar_progress.png`;
-	}, [hearts, navigation.state, level]);
+	}, [expAmount, navigation.state, level]);
 
 	return (
 		<>
@@ -101,7 +95,7 @@ export function LevelPainting() {
 					}}
 				></Input>
 			</Label>
-			<Slider max={100} step={1} value={hearts} onValueChange={setHearts} />
+			<Slider max={100} step={1} value={expAmount} onValueChange={setExpAmount} />
 		</>
 	);
 }
